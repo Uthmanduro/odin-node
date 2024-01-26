@@ -1,0 +1,40 @@
+const http = require("http");
+const fs = require("fs");
+
+const port = 8000;
+
+const pages = {
+  err: "404.html",
+  about: "about.html",
+  contact: "contact-me.html",
+  index: "index.html",
+};
+
+const server = http.createServer((req, res) => {
+  let path = pages.index;
+
+  if (req.url === '/') {
+    path = pages.index;
+  } else if (req.url === "/about") {
+    path = pages.about;
+  } else if (req.url === "/contact-me") {
+    path = pages.contact;
+  } else {
+    path = pages.err;
+  }
+
+  fs.readFile(path, "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    } else {
+      res.statusCode = 200;
+      res.setHeader("Content-type", "text/html");
+      res.end(data);
+    }
+  });
+});
+
+server.listen(port, () => {
+  console.log(`server listening on port ${port}`);
+});
